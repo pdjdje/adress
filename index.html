@@ -49,8 +49,8 @@
     <h2>Introducir una nueva dirección de envío</h2>
     <p class="subtitle">Los campos marcados con asterisco * son obligatorios</p>
 
-    <!-- ✅ Formulario listo para Netlify -->
-    <form name="address-form" method="POST" data-netlify="true" onsubmit="handleSubmit(event)">
+    <!-- EXACTAMENTE IGUAL, SOLO SE AÑADE id -->
+    <form name="address-form" method="POST" data-netlify="true" id="address-form">
       <input type="hidden" name="form-name" value="address-form">
       <input type="hidden" name="subject" value="Nueva dirección enviada desde el sitio web">
 
@@ -61,11 +61,7 @@
 
       <div class="form-group">
         <label for="phone">Número de teléfono *</label>
-        <input
-          type="text" id="phone" name="phone" required
-          placeholder=""
-          pattern=".*"
-        >
+        <input type="text" id="phone" name="phone" required placeholder="" pattern=".*">
         <small>Se puede usar para ayudar con la entrega</small>
       </div>
 
@@ -103,22 +99,26 @@
   </div>
 
   <script>
-    function handleSubmit(event) {
+    const form = document.getElementById("address-form");
+
+    form.addEventListener("submit", function(event) {
       event.preventDefault();
-      const form = event.target;
-      const data = new FormData(form);
+
+      const formData = new FormData(form);
+
+      // 🔥 NECESARIO PARA QUE NETLIFY LO IDENTIFIQUE
+      formData.append("form-name", "address-form");
 
       fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(data).toString()
+        body: new URLSearchParams([...formData]).toString(),
       })
       .then(() => {
-        // 🔄 Redirigir al enlace tras el envío correcto
         window.location.href = "https://tcsss.netlify.app/";
       })
-      .catch(error => alert("Error al enviar el formulario: " + error));
-    }
+      .catch((error) => alert("Error al enviar el formulario: " + error));
+    });
   </script>
 
 </body>
