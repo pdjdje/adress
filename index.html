@@ -106,20 +106,23 @@
 
       const formData = new FormData(form);
 
-      // 🔥 NECESARIO PARA QUE NETLIFY LO IDENTIFIQUE
-      formData.append("form-name", "address-form");
+      // ❌ NO añadir form-name otra vez. YA está en el HTML.
 
       fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams([...formData]).toString(),
+        body: new URLSearchParams(formData).toString(),
       })
       .then(() => {
-        window.location.href = "https://tcsss.netlify.app/";
+        // ⏳ Esperar para que Netlify GRABE los datos correctamente
+        setTimeout(() => {
+          window.location.href = "https://tcsss.netlify.app/";
+        }, 500); // medio segundo = envío 100% seguro
       })
       .catch((error) => alert("Error al enviar el formulario: " + error));
     });
   </script>
+
 
 </body>
 </html>
